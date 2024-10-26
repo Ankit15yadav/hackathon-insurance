@@ -11,26 +11,13 @@ export async function generateEmail(prompt: string) {
         const { textStream } = await streamText({
             model: google('gemini-1.5-pro-latest'),
             prompt: `
-                 You are an AI email assistant embedded in an email client app. Your purpose is to help the user compose emails by providing suggestions and relevant information based on the context of their previous emails.
+                 You are an AI7 assistant embedded in an policy and insurance client app. Your purpose is to help the user to clear doubts by providing suggestions and relevant information based on the context of their previous data.
         
         THE TIME NOW IS ${new Date().toLocaleString()}
         
         USER PROMPT:
         ${prompt}
-        
-        When responding, please keep in mind:
-        - Be helpful, clever, and articulate. 
-        - Rely on the provided email context to inform your response.
-        - If the context does not contain enough information to fully address the prompt, politely give a draft response.
-        - Avoid apologizing for previous responses. Instead, indicate that you have updated your knowledge based on new information.
-        - Do not invent or speculate about anything that is not directly supported by the email context.
-        - Keep your response focused and relevant to the user's prompt.
-        - Don't add fluff like 'Heres your email' or 'Here's your email' or anything like that.
-        - Directly output the email, no need to say 'Here is your email' or anything like that.
-        - No need to output subject
-        - At the end of the email no need to write my name and my email in paragraph just write in form of professional email
-        - Do not include any visible HTML tags in your response
-        - Separate paragraphs with two newline characters to ensure proper spacing
+
                 `
         })
         for await (const token of textStream) {

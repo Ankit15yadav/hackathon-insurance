@@ -11,10 +11,13 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Mic, Send, MicOff } from "lucide-react"
-// import { toast } from "@/components/ui/use-toast"
 import { useToast } from '@/hooks/use-toast'
+import { generateEmail } from '../app/bot/action'
+import { readStreamableValue } from 'ai/rsc'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface Message {
+    id: string
     text: string
     isUser: boolean
 }
@@ -23,6 +26,7 @@ export function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     const [messages, setMessages] = useState<Message[]>([])
     const [input, setInput] = useState('')
     const [isListening, setIsListening] = useState(false)
+    const [isGenerating, setIsGenerating] = useState(false)
     const scrollAreaRef = useRef<HTMLDivElement>(null)
     const recognitionRef = useRef<SpeechRecognition | null>(null)
 
@@ -30,7 +34,7 @@ export function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
 
     useEffect(() => {
         if (isOpen && messages.length === 0) {
-            setMessages([{ text: "Hello! How can I assist you today?", isUser: false }])
+            setMessages([{ id: 'initial', text: "Hello! How can I assist you today?", isUser: false }])
         }
     }, [isOpen, messages.length])
 
@@ -74,14 +78,36 @@ export function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         }
     }, [])
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (input.trim()) {
-            setMessages([...messages, { text: input, isUser: true }])
+            const userMessageId = `user-${Date.now()}`
+            const aiMessageId = `ai-${Date.now()}`
+            setMessages(prev => [...prev, { id: userMessageId, text: input, isUser: true }])
             setInput('')
-            // Simulate bot response
-            setTimeout(() => {
-                setMessages(prev => [...prev, { text: "I'm processing your request. How else can I help you?", isUser: false }])
-            }, 1000)
+            setIsGenerating(true)
+
+            try {
+                const { output } = await generateEmail(input)
+                let generatedText = ''
+
+                setMessages(prev => [...prev, { id: aiMessageId, text: '', isUser: false }])
+
+                for await (const chunk of readStreamableValue(output)) {
+                    generatedText += chunk
+                    setMessages(prev => prev.map(msg =>
+                        msg.id === aiMessageId ? { ...msg, text: generatedText.trim() } : msg
+                    ))
+                }
+            } catch (error) {
+                console.error('Error generating response:', error)
+                toast({
+                    title: "Error",
+                    description: "There was an error generating the response. Please try again.",
+                    variant: "destructive",
+                })
+            } finally {
+                setIsGenerating(false)
+            }
         }
     }
 
@@ -106,52 +132,96 @@ export function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
+            <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0 gap-0">
+                <DialogHeader className="px-6 py-4 border-b">
                     <DialogTitle>Chat with our AI Assistant</DialogTitle>
                 </DialogHeader>
-                <div className="flex flex-col h-[400px]">
-                    <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
-                        {messages.map((message, index) => (
-                            <div
-                                key={index}
-                                className={`mb-4 ${message.isUser ? 'text-right' : 'text-left'
-                                    }`}
+                <ScrollArea className="flex-grow px-6 py-4" ref={scrollAreaRef}>
+                    <AnimatePresence initial={false}>
+                        {messages.map((message) => (
+                            <motion.div
+                                key={message.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} mb-4`}
                             >
                                 <div
-                                    className={`inline-block p-2 rounded-lg ${message.isUser
+                                    className={`max-w-[80%] p-3 rounded-lg ${message.isUser
                                         ? 'bg-blue-500 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                                         }`}
                                 >
                                     {message.text}
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </ScrollArea>
-                    <div className="flex items-center mt-4">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className={`mr-2 ${isListening ? 'bg-red-500 text-white' : ''}`}
-                            onClick={handleVoiceCommand}
+                    </AnimatePresence>
+                    {isGenerating && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="flex justify-start mb-4"
                         >
-                            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                        </Button>
-                        <Input
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="Type your message..."
-                            className="flex-grow"
-                            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                        />
-                        <Button className="ml-2" onClick={handleSend}>
-                            <Send className="h-4 w-4" />
-                        </Button>
-                    </div>
+                            <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                                <LoadingIndicator />
+                            </div>
+                        </motion.div>
+                    )}
+                </ScrollArea>
+                <div className="flex items-center p-4 border-t">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className={`mr-2 ${isListening ? 'bg-red-500 text-white' : ''}`}
+                        onClick={handleVoiceCommand}
+                        aria-label={isListening ? "Stop voice input" : "Start voice input"}
+                    >
+                        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    </Button>
+                    <Input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Type your message..."
+                        className="flex-grow"
+                        onKeyPress={(e) => e.key === 'Enter' && !isGenerating && handleSend()}
+                        aria-label="Chat input"
+                    />
+                    <Button
+                        className="ml-2"
+                        onClick={handleSend}
+                        disabled={isGenerating || !input.trim()}
+                        aria-label="Send message"
+                    >
+                        <Send className="h-4 w-4" />
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>
+    )
+}
+
+function LoadingIndicator() {
+    return (
+        <div className="flex space-x-1">
+            {[0, 1, 2].map((index) => (
+                <motion.div
+                    key={index}
+                    className="w-2 h-2 bg-blue-500 rounded-full"
+                    animate={{
+                        y: ["0%", "-50%", "0%"],
+                    }}
+                    transition={{
+                        duration: 0.6,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        delay: index * 0.2,
+                    }}
+                />
+            ))}
+        </div>
     )
 }
 
