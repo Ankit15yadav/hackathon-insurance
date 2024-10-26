@@ -17,7 +17,7 @@ const Dashboard = () => {
         <div className=' text-black dark:text-white font-semibold '>
             <h1>Welcome, {user?.firstName}</h1>
             <p>Email: {user?.primaryEmailAddress?.emailAddress}</p>
-            <PaymentPage amount={400} />
+            <PaymentPage amount={'400'} />
         </div>
     );
 }

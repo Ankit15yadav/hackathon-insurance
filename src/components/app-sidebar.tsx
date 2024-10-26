@@ -1,4 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+// import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { FileText, Briefcase, Users, ShieldCheck, Settings } from "lucide-react"
 
 import {
     Sidebar,
@@ -14,24 +15,24 @@ import {
 // Menu items.
 const items = [
     {
-        title: "Home",
+        title: "Dashboard",
         url: "#",
-        icon: Home,
+        icon: Briefcase,
     },
     {
-        title: "Inbox",
+        title: "Policies",
         url: "#",
-        icon: Inbox,
+        icon: FileText,
     },
     {
-        title: "Calendar",
+        title: "Claims",
         url: "#",
-        icon: Calendar,
+        icon: ShieldCheck,
     },
     {
-        title: "Search",
+        title: "Clients",
         url: "#",
-        icon: Search,
+        icon: Users,
     },
     {
         title: "Settings",

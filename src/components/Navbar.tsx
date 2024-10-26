@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs' // Import from Clerk
 import { Button } from './ui/button'
 import logo from "../assets/logo.png"
+// import InsuranceForm from './insurance-form'
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -64,8 +65,16 @@ const Navbar = () => {
                                 <div className=' flex items-center justify-center gap-3'>
                                     <UserButton />
                                     <Link href={"/dashboard"}>
-                                        <Button>
+                                        <Button
+                                            className=' mr-2'
+                                        >
                                             Dashboard
+                                        </Button>
+                                    </Link>
+
+                                    <Link href="/insurance-form">
+                                        <Button size="lg" className="text-lg bg-green-500 hover:bg-green-400">
+                                            Details form
                                         </Button>
                                     </Link>
 
@@ -76,11 +85,17 @@ const Navbar = () => {
                                         <Button className="mr-2">Log in</Button>
                                     </Link>
                                     <Link href="/sign-up">
-                                        <Button>Sign up</Button>
+                                        <Button className='mr-2'>Sign up</Button>
+                                    </Link>
+                                    <Link href="/insurance-form">
+                                        <Button size="lg" className="text-md bg-green-500 hover:bg-green-400">
+                                            Details form
+                                        </Button>
                                     </Link>
                                 </>
                             )}
                         </div>
+
                     </div>
                     <div className="-mr-2 flex md:hidden">
                         <button
