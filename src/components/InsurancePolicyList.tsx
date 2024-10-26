@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import InsurancePolicyCard from './InsurancePolicyCard'
 import { useUser } from '@clerk/nextjs'
+import { useAtom } from 'jotai'
+import { updateCreditAtom } from '@/store'
 
 interface Policy {
     policy_name: string
@@ -25,8 +27,9 @@ interface InsurancePolicyListProps {
 }
 
 export default function InsurancePolicyList({ data }: InsurancePolicyListProps) {
-    const [isProcessing, setIsProcessing] = useState(false)
-    const { user } = useUser()
+    const [isProcessing, setIsProcessing] = useState(false);
+    const { user } = useUser();
+    const [credit, setCredit] = useAtom(updateCreditAtom);
 
     useEffect(() => {
         // Load Razorpay script
@@ -60,8 +63,14 @@ export default function InsurancePolicyList({ data }: InsurancePolicyListProps) 
                 order_id: data.orderId,
                 handler: function (response: any) {
                     alert(response.razorpay_payment_id);
-                },
-                prefill: {
+
+                    // Calculate 15% of the premium as credit
+                    const creditAmount = parseInt(policy.premium_per_month) * 0.15;
+
+                    // Update credit using the writable atom
+                    const value = creditAmount + credit;
+                    setCredit(value);
+                }, prefill: {
                     name: user?.firstName,
                     email: user?.emailAddresses[0].emailAddress,
                     contact: user?.phoneNumbers[0].phoneNumber,

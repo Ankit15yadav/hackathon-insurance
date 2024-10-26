@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "express": "^4.21.1",
+    "jotai": "^2.10.1",
     "lucide-react": "^0.453.0",
     "mongoose": "^8.7.2",
     "next": "15.0.1",

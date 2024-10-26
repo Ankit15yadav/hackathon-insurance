@@ -5,6 +5,8 @@ import React from 'react'
 import { FaBolt, FaUmbrella, FaHeartbeat, FaChartLine, FaCar, FaPlane, FaFemale, FaRecycle, FaPiggyBank, FaChild } from 'react-icons/fa'
 import { Plane } from "lucide-react"
 import InsuranceProcess from './InsuranceProcess';
+import { useAtom } from 'jotai';
+import { updateCreditAtom } from '@/store';
 
 interface BenefitIconProps {
     icon: React.ReactNode
@@ -94,14 +96,30 @@ const InsuranceCard: React.FC<InsuranceCardProps> = ({ icon, title, label, onCli
 
 const InsuranceComparison: React.FC = () => {
     const router = useRouter();
+    const [credit] = useAtom(updateCreditAtom);
 
     return (
         <div className="bg-gray-900 text-white min-h-screen">
             <div className="max-w-6xl mx-auto px-4 py-8">
-                <h1 className="text-4xl font-bold mb-4">
-                    Let's find you <br />
-                    the <span className="text-blue-400">Best Insurance</span>
-                </h1>
+                <div className=' flex items-center justify-between'>
+                    <h1 className="text-4xl font-bold mb-4">
+                        Let's find you <br />
+                        the <span className="text-blue-400">Best Insurance</span>
+                    </h1>
+
+                    <h1>
+                        {credit ?
+                            <span className=' text-yellow-400 text-xl animate-pulse'>
+                                You have {credit} credits
+                            </span>
+                            :
+                            <span className=' text-red-400'>
+                                You have no credits
+                            </span>
+                        }
+                    </h1>
+                </div>
+
 
                 <div className="flex flex-col md:flex-row justify-between mb-8">
                     <BenefitIcon
@@ -112,6 +130,7 @@ const InsuranceComparison: React.FC = () => {
                         icon={<FaBolt className="text-orange-400" />}
                         text="Quick, easy & hassle free"
                     />
+
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

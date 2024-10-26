@@ -60,7 +60,7 @@ export default function Footer() {
                                 />
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-r-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary dark:hover:bg-primary-light dark:focus:ring-offset-gray-800"
+                                    className="px-4 py-2 text-sm font-medium text-black bg-primary rounded-r-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:bg-primary dark:hover:bg-primary-light dark:focus:ring-offset-gray-800"
                                 >
                                     Subscribe
                                 </button>
