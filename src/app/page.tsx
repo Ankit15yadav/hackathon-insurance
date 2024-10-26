@@ -1,6 +1,7 @@
 'use client';
 
 import FeaturesSection from "@/components/features-section";
+import Footer from "@/components/Footer";
 import InsuranceComparison from "@/components/InsuraceComparison";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
@@ -78,6 +79,7 @@ export default function Home() {
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
       <InsuranceComparison />
       <FeaturesSection />
+      <Footer />
     </div>
   );
 }

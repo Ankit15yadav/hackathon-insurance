@@ -87,11 +87,6 @@ const Navbar = () => {
                                     <Link href="/sign-up">
                                         <Button className='mr-2'>Sign up</Button>
                                     </Link>
-                                    <Link href="/insurance-form">
-                                        <Button size="lg" className="text-md bg-green-500 hover:bg-green-400">
-                                            Details form
-                                        </Button>
-                                    </Link>
                                 </>
                             )}
                         </div>

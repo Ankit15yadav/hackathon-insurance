@@ -1,9 +1,20 @@
+import healthFirst from "../healthfirst.jpeg"
+import lifeCare from "../lifeCare.jpeg"
+import apollo from "../apollo.jpeg"
+import star from "../star.jpeg"
+import hdfc from "../hdfc.png"
+import max from "../maxlife.png"
+import bajaj from "../bajaj.png"
+import pnb from "../pnb.jpeg"
+import bandhan from "../bandhan.jpeg"
+import sbi from "../sbi.png"
+
 
 export const companies = [
     {
         "name": "HealthFirst Insurance",
         "category": "Health Insurance",
-        "image_path": "/images/healthfirst_logo.png",
+        "image_path": healthFirst,
         "policies": [
             {
                 "policy_name": "Standard Health Plan",
@@ -34,7 +45,7 @@ export const companies = [
     {
         "name": "LifeCare Insure",
         "category": "Health Insurance",
-        "image_path": "/images/lifecare_logo.png",
+        "image_path": lifeCare,
         "policies": [
             {
                 "policy_name": "Senior Citizen Care Plan",
@@ -53,7 +64,7 @@ export const companies = [
     {
         "name": "Apollo Health Insurance",
         "category": "Health Insurance",
-        "image_path": "/images/apollo_logo.png",
+        "image_path": apollo,
         "policies": [
             {
                 "policy_name": "Comprehensive Care Plan",
@@ -84,7 +95,7 @@ export const companies = [
     {
         "name": "Star Health",
         "category": "Health Insurance",
-        "image_path": "/images/starhealth_logo.png",
+        "image_path": star,
         "policies": [
             {
                 "policy_name": "Health Gain Plan",
@@ -115,7 +126,7 @@ export const companies = [
     {
         "name": "HDFC Health Insurance",
         "category": "Health Insurance",
-        "image_path": "/images/hdfc_logo.png",
+        "image_path": hdfc,
         "policies": [
             {
                 "policy_name": "HDFC Health Assure",
@@ -134,7 +145,7 @@ export const companies = [
     {
         "name": "Max Life",
         "category": "Life Insurance",
-        "image_path": "/images/maxlife_logo.png",
+        "image_path": max,
         "policies": [
             {
                 "policy_name": "Max Lifetime Plus",
@@ -157,7 +168,7 @@ export const companies = [
     {
         "name": "Bajaj Allianz",
         "category": "Life Insurance",
-        "image_path": "/images/bajajallianz_logo.png",
+        "image_path": bajaj,
         "policies": [
             {
                 "policy_name": "Bajaj Wealth Assure",
@@ -180,7 +191,7 @@ export const companies = [
     {
         "name": "PNB MetLife",
         "category": "Life Insurance",
-        "image_path": "/images/pnbmetlife_logo.png",
+        "image_path": pnb,
         "policies": [
             {
                 "policy_name": "MetLife Premier Protect",
@@ -203,7 +214,7 @@ export const companies = [
     {
         "name": "Bandhan Life",
         "category": "Life Insurance",
-        "image_path": "/images/bandhanlife_logo.png",
+        "image_path": bandhan,
         "policies": [
             {
                 "policy_name": "Bandhan Life Secure",
@@ -226,7 +237,7 @@ export const companies = [
     {
         "name": "SBI Life",
         "category": "Life Insurance",
-        "image_path": "/images/sbilife_logo.png",
+        "image_path": sbi,
         "policies": [
             {
                 "policy_name": "SBI Life Smart Shield",
@@ -264,6 +275,6 @@ export const healthInsuranceCompanies = groupedCompanies["Health Insurance"];
 export const lifeInsuranceCompanies = groupedCompanies["Life Insurance"];
 
 // Logging to check the structure
-// console.log("Grouped Companies by Category:", groupedCompanies);
+console.log("Grouped Companies by Category:", groupedCompanies);
 console.log("Health Insurance Companies:", healthInsuranceCompanies);
 console.log("Life Insurance Companies:", lifeInsuranceCompanies);

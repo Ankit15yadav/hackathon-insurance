@@ -42,7 +42,7 @@ export default function InsurancePolicyCard({ company, onPayment }: InsurancePol
                     <CardHeader className="pb-4">
                         <div className="flex items-center justify-between">
                             <Image
-                                src={"/"}
+                                src={company.image_path}
                                 alt={`${company.name} logo`}
                                 width={80}
                                 height={80}
