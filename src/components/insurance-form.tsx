@@ -51,7 +51,7 @@ export default function InsuranceForm() {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
 
-        // console.log(values)
+        console.log(values)
         setFormData(values);
         toast({
             title: 'Form submitted!',

@@ -1,4 +1,4 @@
-import UserProfile from '@/components/use-profile'
+import UserProfile from '@/components/auth/use-profile'
 import { SignIn, useUser } from '@clerk/nextjs'
 import React from 'react'
 

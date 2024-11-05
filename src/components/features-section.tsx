@@ -31,9 +31,9 @@ export default function FeaturesSection() {
                         <Card>
                             <CardContent className="p-6">
                                 <Bot className="w-12 h-12 text-green-500 mb-4" />
-                                <h3 className="text-xl font-semibold mb-2">Intelligent Policy Assistant</h3>
+                                <h3 className="text-xl font-semibold mb-2">Intelligent Health Assistant</h3>
                                 <p className="text-muted-foreground mb-4">
-                                    Our AI-powered chatbot guides you through policy options and answers all your insurance queries.
+                                    Our AI-powered chatbot guides you through the symptoms and answers all your queries.
                                 </p>
                                 <Button variant="outline" className="group" onClick={() => setIsChatOpen(true)}>
                                     Chat Now

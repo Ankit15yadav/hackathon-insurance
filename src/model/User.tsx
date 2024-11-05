@@ -39,13 +39,8 @@ const UserSchema: Schema = new Schema({
     claims: [{ type: mongoose.Schema.Types.ObjectId, ref: "Claim" }],
     paymentTransactions: [
         {
-            transactionId: { type: String, },
-            orderId: { type: String, },
-            amount: { type: Number, },
-            date: { type: Date, default: Date.now },
-            status: { type: String, },
-        },
-    ],
+            type: mongoose.Schema.Types.ObjectId, ref: "Payment"
+        }],
 });
 
 const User = mongoose.model<IUser>("User", UserSchema);

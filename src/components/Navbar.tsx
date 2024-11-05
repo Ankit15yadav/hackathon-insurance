@@ -4,18 +4,17 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useUser, UserButton } from '@clerk/nextjs' // Import from Clerk
+import { useUser, UserButton } from '@clerk/nextjs'
 import { Button } from './ui/button'
 import logo from "../assets/logo.png"
-// import InsuranceForm from './insurance-form'
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
-    const [mounted, setMounted] = useState(false) // Check if component is mounted
+    const [mounted, setMounted] = useState(false)
+    const [isProductsHovered, setIsProductsHovered] = useState(false)
     const pathname = usePathname()
-    const { isSignedIn, isLoaded } = useUser() // `isLoaded` ensures Clerk's hook is ready
+    const { isSignedIn, isLoaded } = useUser()
 
-    // Ensures that the component has mounted on the client side
     useEffect(() => {
         setMounted(true)
     }, [])
@@ -26,12 +25,25 @@ const Navbar = () => {
 
     const navItems = [
         { name: 'Home', path: '/' },
-        { name: 'Products', path: '/products' },
         { name: 'Renew', path: '/services' },
         { name: 'About', path: '/about' },
     ]
 
-    // Avoid rendering until `isLoaded` and `mounted` are true
+    const productCategories = [
+        {
+            name: 'Health',
+            items: ['Health Insurance', 'Dental Insurance', 'Vision Insurance']
+        },
+        {
+            name: 'Finance',
+            items: ['Life Insurance', 'Retirement Plans', 'Investment Products']
+        },
+        {
+            name: 'Insurance',
+            items: ['Auto Insurance', 'Home Insurance', 'Travel Insurance']
+        }
+    ]
+
     if (!mounted || !isLoaded) return null
 
     return (
@@ -56,28 +68,61 @@ const Navbar = () => {
                                         {item.name}
                                     </Link>
                                 ))}
+                                <div
+                                    className="relative"
+                                    onMouseEnter={() => setIsProductsHovered(true)}
+                                    onMouseLeave={() => setIsProductsHovered(false)}
+                                >
+                                    <button
+                                        className={`px-3 py-2 rounded-md text-sm font-medium ${isProductsHovered
+                                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
+                                            }`}
+                                    >
+                                        Products
+                                    </button>
+                                    {isProductsHovered && (
+                                        <div className="absolute left-0 mt-0.5 w-96 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                                            <div className="py-1 grid grid-cols-2 gap-4" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                {productCategories.map((category) => (
+                                                    <div key={category.name} className="px-4 py-2">
+                                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{category.name}</p>
+                                                        <ul className="mt-2 space-y-2">
+                                                            {category.items.map((item) => (
+                                                                <li key={item}>
+                                                                    <Link
+                                                                        href={`/products/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                                                                        className="block px-2 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white rounded-md"
+                                                                    >
+                                                                        {item}
+                                                                    </Link>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className="hidden md:block">
                         <div className="ml-4 flex items-center md:ml-6">
                             {isSignedIn ? (
-                                <div className=' flex items-center justify-center gap-3'>
+                                <div className='flex items-center justify-center gap-3'>
                                     <UserButton />
                                     <Link href={"/dashboard"}>
-                                        <Button
-                                            className=' mr-2'
-                                        >
+                                        <Button className='mr-2'>
                                             Dashboard
                                         </Button>
                                     </Link>
-
                                     <Link href="/insurance-form">
                                         <Button size="lg" className="text-lg bg-green-500 hover:bg-green-400">
                                             Details form
                                         </Button>
                                     </Link>
-
                                 </div>
                             ) : (
                                 <>
@@ -90,7 +135,6 @@ const Navbar = () => {
                                 </>
                             )}
                         </div>
-
                     </div>
                     <div className="-mr-2 flex md:hidden">
                         <button
@@ -130,11 +174,36 @@ const Navbar = () => {
                                 {item.name}
                             </Link>
                         ))}
+                        <div className="px-3 py-2">
+                            <p className="text-base font-medium text-gray-700 dark:text-gray-300">Products</p>
+                            <div className="grid grid-cols-2 gap-4 mt-2">
+                                {productCategories.map((category) => (
+                                    <div key={category.name} className="space-y-2">
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{category.name}</p>
+                                        <ul className="space-y-2">
+                                            {category.items.map((item) => (
+                                                <li key={item}>
+                                                    <Link
+                                                        href={`/products/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                                                        className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+                                                    >
+                                                        {item}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                     <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
                         {isSignedIn ? (
                             <div className="flex items-center px-5">
                                 <UserButton />
+                                <Link href="/dashboard" className="ml-3 w-full">
+                                    <Button className="w-full mb-2">Dashboard</Button>
+                                </Link>
                             </div>
                         ) : (
                             <>
@@ -150,6 +219,13 @@ const Navbar = () => {
                                 </div>
                             </>
                         )}
+                        <div className="mt-3 px-2">
+                            <Link href="/insurance-form" className="w-full">
+                                <Button size="lg" className="w-full text-lg bg-green-500 hover:bg-green-400">
+                                    Details form
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             )}

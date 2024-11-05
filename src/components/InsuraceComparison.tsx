@@ -1,12 +1,15 @@
-'use client'
+
 
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaBolt, FaUmbrella, FaHeartbeat, FaChartLine, FaCar, FaPlane, FaFemale, FaRecycle, FaPiggyBank, FaChild } from 'react-icons/fa'
 import { Plane } from "lucide-react"
 import InsuranceProcess from './InsuranceProcess';
 import { useAtom } from 'jotai';
 import { updateCreditAtom } from '@/store';
+import { useUser } from '@clerk/nextjs';
+import UserProfileModal from './auth/use-profile';
+
 
 interface BenefitIconProps {
     icon: React.ReactNode
@@ -97,7 +100,35 @@ const InsuranceCard: React.FC<InsuranceCardProps> = ({ icon, title, label, onCli
 const InsuranceComparison: React.FC = () => {
     const router = useRouter();
     const [credit] = useAtom(updateCreditAtom);
+    const [clientCredit, setClientCredit] = React.useState<string | number>();
+    // const { isSignedIn } = useAuth();
+    const { isSignedIn, user } = useUser();
+    const [showModal, setShowModal] = useState(false);
 
+
+
+
+    React.useEffect(() => {
+        setClientCredit(credit);
+    }, [credit]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const hasShownModal = localStorage.getItem('hasShownModal');
+
+            if (isSignedIn && !hasShownModal) {
+                setShowModal(true);
+                localStorage.setItem('hasShownModal', 'true');
+            }
+        }
+    }, [isSignedIn]);
+
+    useEffect(() => {
+        // Clear local storage when signed out
+        if (!isSignedIn) {
+            localStorage.removeItem('hasShownModal');
+        }
+    }, [isSignedIn]);
     return (
         <div className="bg-gray-900 text-white min-h-screen">
             <div className="max-w-6xl mx-auto px-4 py-8">
@@ -109,8 +140,8 @@ const InsuranceComparison: React.FC = () => {
 
                     <h1>
                         {credit ?
-                            <span className=' text-yellow-400 text-xl animate-pulse'>
-                                You have {credit} credits
+                            <span className=' text-yellow-400 text-2xl animate-pulse'>
+                                You have {clientCredit} credits
                             </span>
                             :
                             <span className=' text-red-400'>
@@ -147,6 +178,8 @@ const InsuranceComparison: React.FC = () => {
                 <div className=' mt-6'>
                     <InsuranceProcess />
                 </div>
+
+                {showModal && <UserProfileModal onClose={() => setShowModal(false)} />}
             </div>
         </div>
 

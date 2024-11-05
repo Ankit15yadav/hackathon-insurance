@@ -1,4 +1,3 @@
-'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
@@ -219,7 +218,9 @@ function LoadingIndicator() {
                         repeatType: "reverse",
                         delay: index * 0.2,
                     }}
+
                 />
+
             ))}
         </div>
     )

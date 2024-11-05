@@ -3,6 +3,7 @@ import InsurancePolicyCard from './InsurancePolicyCard'
 import { useUser } from '@clerk/nextjs'
 import { useAtom } from 'jotai'
 import { updateCreditAtom } from '@/store'
+import { useToast } from '@/hooks/use-toast'
 
 interface Policy {
     policy_name: string
@@ -30,6 +31,7 @@ export default function InsurancePolicyList({ data }: InsurancePolicyListProps) 
     const [isProcessing, setIsProcessing] = useState(false);
     const { user } = useUser();
     const [credit, setCredit] = useAtom(updateCreditAtom);
+    const { toast } = useToast();
 
     useEffect(() => {
         // Load Razorpay script
@@ -41,6 +43,12 @@ export default function InsurancePolicyList({ data }: InsurancePolicyListProps) 
 
     const handlePayment = async (policy: Policy) => {
         setIsProcessing(true);
+
+        toast({
+            title: "Payment initiated",
+            description: "Please wait while we process your payment.",
+            duration: 2000,
+        });
 
         try {
             // Send the amount in the POST request body
@@ -70,6 +78,7 @@ export default function InsurancePolicyList({ data }: InsurancePolicyListProps) 
                     // Update credit using the writable atom
                     const value = creditAmount + credit;
                     setCredit(value);
+
                 }, prefill: {
                     name: user?.firstName,
                     email: user?.emailAddresses[0].emailAddress,
@@ -84,6 +93,13 @@ export default function InsurancePolicyList({ data }: InsurancePolicyListProps) 
             rzp1.open();
         } catch (error) {
             console.log(error);
+
+            toast({
+                title: "Payment failed",
+                description: "Please try again later.",
+                variant: "destructive",
+            });
+
         } finally {
             setIsProcessing(false);
         }
